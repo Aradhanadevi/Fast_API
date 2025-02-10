@@ -2,11 +2,10 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import torch
 from transformers import T5Tokenizer, T5ForConditionalGeneration
-import nest_asyncio
 import uvicorn
 
 # Load the fine-tuned model
-MODEL_PATH = "fine_tuned_t5"  # Update with your saved model path
+MODEL_PATH = "./fine_tuned_t5"  # Local path in your project folder
 tokenizer = T5Tokenizer.from_pretrained(MODEL_PATH)
 model = T5ForConditionalGeneration.from_pretrained(MODEL_PATH)
 
@@ -31,8 +30,6 @@ async def summarize(request: SummaryRequest):
     summary = generate_summary(request.text, request.max_length)
     return {"summary": summary}
 
-# Allow running Uvicorn in Colab
-nest_asyncio.apply()
-
 # Run FastAPI server
-uvicorn.run(app, host="0.0.0.0", port=8000)
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
